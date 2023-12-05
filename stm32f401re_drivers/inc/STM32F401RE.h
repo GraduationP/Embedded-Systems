@@ -1,8 +1,8 @@
 
 
 /* Header File Guard */
-#ifndef INC_STM32F401XE_H_
-#define INC_STM32F401XE_H_
+#ifndef INC_STM32F401RE_H_
+#define INC_STM32F401RE_H_
 
 //-----------------------------
 //	    Includes
@@ -174,4 +174,4 @@ typedef struct{
 #define RCC_ADC1_CLK_EN()		(RCC->APB2ENR |= 1<<8)
 
 
-#endif /* INC_STM32F401XE_H_ */
+#endif /* INC_STM32F401RE_H_ */
