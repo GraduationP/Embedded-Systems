@@ -7,10 +7,14 @@
 
 
 /**************************************/
-/*		Includes	      */
+/*				Includes			  */
 /**************************************/
 #include <STM32F401RE_GPIO.h>
 
+
+/**************************************/
+/*			Generic Functions		  */
+/**************************************/
 uint16_t GetPinPosition(uint16_t uint16_PinNumber)
 {
 	switch(uint16_PinNumber)
@@ -66,11 +70,16 @@ uint16_t GetPinPosition(uint16_t uint16_PinNumber)
 	};
 	return 0;
 }
+
+/**************************************/
+/*			 APIs Functions		  	  */
+/**************************************/
+
 /**========================================================
  * @Fn			- MCAL_GPIO_Init
  * @brief		- Initializes the GPIOx PINy according to the specified Pin_Config
- * @param[in]		- GPIOx		 : specific GPIO Port (from A to H)
- * @param[in]		- Pin_Config : pointer to the struct GPIO_PinConfig_S that contains the Pin config informations
+ * @param[in]	- GPIOx		 : specific GPIO Port (from A to D)
+ * @param[in]	- Pin_Config : pointer to the struct GPIO_PinConfig_S that contains the Pin config informations
  * @retval		- None
  * Note			-
  */
@@ -109,6 +118,7 @@ void MCAL_GPIO_Init(GPIO_S* GPIOx, GPIO_PinConfig_S* PinConfig)
 	{
 		/* Initializing GPIO Pin as an AF Pin ___ MODER[1:0] = 0b11*/
 		GPIOx->MODER |= 0x2 <<GetPinPosition(PinConfig->GPIO_PinNumber);
+
 	}
 	/* GPIO port pull-up/pull-down register (GPIOx_PUPDR[1:0])*/
 	if(((PinConfig->GPIO_PinMode >> MODE_ANALOG_ENCODE) %2) == 0) // Every other mode has pull-up, pull-down capability
@@ -123,8 +133,8 @@ void MCAL_GPIO_Init(GPIO_S* GPIOx, GPIO_PinConfig_S* PinConfig)
 
 /**========================================================
  * @Fn			- MCAL_GPIO_DeInit
- * @brief		- Resets the GPIOx Ports (from A to H)
- * @param[in]		- GPIOx : specific GPIO peripheral selection
+ * @brief		- Resets the GPIOx Ports (from A to D)
+ * @param[in]	- GPIOx : specific GPIO peripheral selection
  * @retval		- None
  * Note			-
  */
@@ -150,23 +160,13 @@ void MCAL_GPIO_DeInit(GPIO_S* GPIOx)
 		RCC->AHB1RSTR |= 0x8;
 		RCC->AHB1RSTR &= ~0x8;
 	}
-	else if(GPIOx == GPIOE)
-	{
-		RCC->AHB1RSTR |= 0x01;
-		RCC->AHB1RSTR &= ~0x01;
-	}
-	else if(GPIOx == GPIOH)
-	{
-		RCC->AHB1RSTR |= 0x10;
-		RCC->AHB1RSTR &= ~0x10;
-	}
 }
 
 /**========================================================
  * @Fn			- MCAL_GPIO_ReadPin
  * @brief		- Reads the GPIOx Peripheral specified pin
- * @param[in]		- GPIOx		 : specific GPIO Port (from A to H)
- * @param[in]		- Pin_Number : GPIO Pin number to be read
+ * @param[in]	- GPIOx		 : specific GPIO Port (from A to D)
+ * @param[in]	- Pin_Number : GPIO Pin number to be read
  * @retval		- The input pin value (two values based on @ref GPIO_PIN_state
  * Note			-
  */
@@ -178,7 +178,7 @@ uint8_t MCAL_GPIO_ReadPin(GPIO_S* GPIOx, uint16_t PinNumber)
 /**========================================================
  * @Fn			- MCAL_GPIO_ReadPort
  * @brief		- Reads the GPIOx Port value
- * @param[in]		- GPIOx		 : specific GPIO Port (from A to H)
+ * @param[in]	- GPIOx		 : specific GPIO Port (from A to D)
  * @retval		- The port reading
  * Note			- None
  */
@@ -190,8 +190,8 @@ uint16_t MCAL_GPIO_ReadPort(GPIO_S* GPIOx)
 /**========================================================
  * @Fn			- MCAL_GPIO_WritePin
  * @brief		- writes the GPIOx pin value
- * @param[in]		- GPIOx : specific GPIO Port (from A to H)
- * @param[in]		- PinNumber : specific GPIO peripheral selection
+ * @param[in]	- GPIOx : specific GPIO Port (from A to D)
+ * @param[in]	- PinNumber : specific GPIO peripheral selection
  * @retval		- None
  * Note			- None
  */
@@ -223,8 +223,8 @@ void MCAL_GPIO_WritePin(GPIO_S* GPIOx, uint16_t PinNumber, uint8_t PinValue)
 /**========================================================
  * @Fn			- MCAL_GPIO_WritePort
  * @brief		- Write to the GPIOx Port
- * @param[in]		- GPIOx : specific GPIO Port (from A to H)
- * @param[in]		- PortValue: the value written to the port
+ * @param[in]	- GPIOx : specific GPIO Port (from A to D)
+ * @param[in]	- PortValue: the value written to the port
  * @retval		- None
  * Note			- None
  */
@@ -236,8 +236,8 @@ void MCAL_GPIO_WritePort(GPIO_S* GPIOx, uint16_t PortValue)
 /**========================================================
  * @Fn			- MCAL_GPIO_TogglePin
  * @brief		- Toggles the GPIOx specific pin
- * @param[in]		- GPIOx : specific GPIO Port (from A to H)
- * @param[in]		- PinNumber: desired pin to toggle
+ * @param[in]	- GPIOx : specific GPIO Port (from A to D)
+ * @param[in]	- PinNumber: desired pin to toggle
  * @retval		- None
  * Note			- None
  */

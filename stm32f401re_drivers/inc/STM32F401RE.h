@@ -5,40 +5,42 @@
 #define INC_STM32F401RE_H_
 
 //-----------------------------
-//	    Includes
+//			Includes
 //-----------------------------
 #include <stdint.h>
 #include <stdlib.h>
 
 //----------------------------------------------
-//	Base addresses for Memories
+//			Base addresses for Memories
 //----------------------------------------------
-#define SRAM1_base				0x20000000
+#define SRAM1_base					0x20000000
 #define System_memory_base			0x1FFF0000
 #define Flash_memory_base			0x08000000
 #define Flash_aliased_base			0x00000000
 
-//----------------------------------------------
-//	Base addresses for AHB1 Peripherals
-//----------------------------------------------
-#define RCC_base			0x40023800
+#define NVIC_BASE					0xE000E000
+#define NVIC_ISER0					*(volatile uint32_t*)(NVIC_BASE + 0x100)
+#define NVIC_ISER1					*(volatile uint32_t*)(NVIC_BASE + 0x104)
+#define NVIC_ICER0					*(volatile uint32_t*)(NVIC_BASE + 0x180)
+#define NVIC_ICER1					*(volatile uint32_t*)(NVIC_BASE + 0x184)
 
-#define GPIOA_base			0x40020000
-#define GPIOB_base			0x40020400
-#define GPIOC_base			0x40020800
-#define GPIOD_base			0x40020C00
-#define GPIOE_base			0x40021000
+//----------------------------------------------
+//		Base addresses for AHB1 Peripherals
+//----------------------------------------------
+#define RCC_BASE			0x40023800
+
+#define GPIOA_BASE			0x40020000
+#define GPIOB_BASE			0x40020400
+#define GPIOC_BASE			0x40020800
+#define GPIOD_BASE			0x40020C00
+#define GPIOE_BASE			0x40021000
 #define GPIOH_BASE			0x40021C00
 
 //----------------------------------------------
-//	Base addresses for APB2 Peripherals
+//		BASE addresses for APB2 Peripherals
 //----------------------------------------------
-#define EXTI_base			0x40013C00
-
-//----------------------------------------------
-//	Base addresses for APB1 Peripherals
-//----------------------------------------------
-
+#define EXTI_BASE			0x40013C00
+#define SYSCFG_BASE			0x40013800
 
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Peripherals registers:
@@ -110,24 +112,31 @@ typedef struct{
 	volatile uint32_t PR;
 }EXTI_S;
 
+//SYSCFG
+typedef struct{
+	volatile uint32_t MEMRMP;
+	volatile uint32_t PMC;
+	volatile uint32_t EXTICR[4];
+	volatile uint32_t RESERVED1;
+	volatile uint32_t RESERVED2;
+	volatile uint32_t CMPCR;
+}SYSCFG_S;
 
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Peripherals Instants:
 //-*-*-*-*-*-*-*-*-*-*-*
-#define RCC 				((RCC_S *)RCC_base)
+#define RCC 				((RCC_S *)RCC_BASE)
 
-#define GPIOA 				((GPIO_S *)GPIOA_base)
-#define GPIOB 				((GPIO_S *)GPIOB_base)
-#define GPIOC 				((GPIO_S *)GPIOC_base)
-#define GPIOD 				((GPIO_S *)GPIOD_base)
-#define GPIOE 				((GPIO_S *)GPIOE_base)
-#define GPIOH				((GPIO_S *)GPIOH_BASE)
+#define GPIOA 				((GPIO_S *)GPIOA_BASE)
+#define GPIOB 				((GPIO_S *)GPIOB_BASE)
+#define GPIOC 				((GPIO_S *)GPIOC_BASE)
+#define GPIOD 				((GPIO_S *)GPIOD_BASE)
 
-#define EXTI 				((EXTI_S *)EXTI_base)
+#define EXTI 				((EXTI_S *)EXTI_BASE)
 
-
+#define SYSCFG				((SYSCFG_S*)SYSCFG_BASE)
 /**************************************/
-/*	 Clock Enable Macros	      */
+/*			Clock Enable Macros		  */
 /**************************************/
 // Clock Sources Enable
 #define RCC_HSE_EN()			(RCC->CR |= 1<<16)
@@ -173,5 +182,63 @@ typedef struct{
 
 #define RCC_ADC1_CLK_EN()		(RCC->APB2ENR |= 1<<8)
 
+#define RCC_SYSCFG_CLK_EN()		(RCC->APB2ENR |= 1<<14)
+
+/**************************************/
+/*				IVT Macros		   	  */
+/**************************************/
+// NVIC Values in Interrupt Vector Table
+#define EXTI0_IRQ				(uint8_t)6
+#define EXTI1_IRQ				(uint8_t)7
+#define EXTI2_IRQ				(uint8_t)8
+#define EXTI3_IRQ				(uint8_t)9
+#define EXTI4_IRQ				(uint8_t)10
+#define EXTI5_IRQ				(uint8_t)23
+#define EXTI6_IRQ				(uint8_t)23
+#define EXTI7_IRQ				(uint8_t)23
+#define EXTI8_IRQ				(uint8_t)23
+#define EXTI9_IRQ				(uint8_t)23
+#define EXTI10_IRQ				(uint8_t)40
+#define EXTI11_IRQ				(uint8_t)40
+#define EXTI12_IRQ				(uint8_t)40
+#define EXTI13_IRQ				(uint8_t)40
+#define EXTI14_IRQ				(uint8_t)40
+#define EXTI15_IRQ				(uint8_t)40
+#define EXTI16_IRQ				(uint8_t)1
+#define EXTI17_IRQ				(uint8_t)41
+#define EXTI18_IRQ				(uint8_t)42
+#define EXTI21_IRQ				(uint8_t)2
+#define EXTI22_IRQ				(uint8_t)3
+
+/**************************************/
+/*		 NVIC IRQ Enable Macros		  */
+/**************************************/
+// Enabling IRQ in NVIC
+#define EXTI0_IRQ_ENABLE()			(NVIC_ISER0 |= 1<<6)
+#define EXTI1_IRQ_ENABLE()			(NVIC_ISER0 |= 1<<7)
+#define EXTI2_IRQ_ENABLE()			(NVIC_ISER0 |= 1<<8)
+#define EXTI3_IRQ_ENABLE()			(NVIC_ISER0 |= 1<<9)
+#define EXTI4_IRQ_ENABLE()			(NVIC_ISER0 |= 1<<10)
+#define EXTI9_5_IRQ_ENABLE()		(NVIC_ISER0 |= 1<<23)
+#define EXTI15_10_IRQ_ENABLE()		(NVIC_ISER1 |= 1<<8)
+#define EXTI16_IRQ_ENABLE()			(NVIC_ISER0 |= 1<<1)
+#define EXTI17_IRQ_ENABLE()			(NVIC_ISER1 |= 1<<9)
+#define EXTI18_IRQ_ENABLE()			(NVIC_ISER1 |= 1<<10)
+#define EXTI21_IRQ_ENABLE()			(NVIC_ISER0 |= 1<<2)
+#define EXTI22_IRQ_ENABLE()			(NVIC_ISER0 |= 1<<3)
+
+// Disabling IRQ in NVIC
+#define EXTI0_IRQ_DISABLE()			(NVIC_ICER0 |= 1<<6)
+#define EXTI1_IRQ_DISABLE()			(NVIC_ICER0 |= 1<<7)
+#define EXTI2_IRQ_DISABLE()			(NVIC_ICER0 |= 1<<8)
+#define EXTI3_IRQ_DISABLE()			(NVIC_ICER0 |= 1<<9)
+#define EXTI4_IRQ_DISABLE()			(NVIC_ICER0 |= 1<<10)
+#define EXTI9_5_IRQ_DISABLE()		(NVIC_ICER0 |= 1<<23)
+#define EXTI15_10_IRQ_DISABLE()		(NVIC_ICER1 |= 1<<8)
+#define EXTI16_IRQ_DISABLE()		(NVIC_ICER0 |= 1<<1)
+#define EXTI17_IRQ_DISABLE()		(NVIC_ICER1 |= 1<<9)
+#define EXTI18_IRQ_DISABLE()		(NVIC_ICER1 |= 1<<10)
+#define EXTI21_IRQ_DISABLE()		(NVIC_ICER0 |= 1<<2)
+#define EXTI22_IRQ_DISABLE()		(NVIC_ICER0 |= 1<<3)
 
 #endif /* INC_STM32F401RE_H_ */
