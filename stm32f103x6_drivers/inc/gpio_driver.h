@@ -45,7 +45,7 @@ typedef struct{
 #define pin15	(uint32_t)0x8000
 #define allpins	(uint32_t)0xFFFF
 /*
-/*@ref GPIO_MODE_define
+ *@ref GPIO_MODE_define
 */
 //In input mode (MODE[1:0]=00):
 //0: Analog mode
@@ -66,7 +66,7 @@ typedef struct{
 #define GPIO_MODE_OUTPUT_AF_OD			0X7
 //#define GPIO_MODE_ANALOG				0X8
 /*
-/*@ref GPIO_SPEED_define
+ *@ref GPIO_SPEED_define
 */
 //1: Output mode, max speed 10 MHz.
 //2: Output mode, max speed 2 MHz.

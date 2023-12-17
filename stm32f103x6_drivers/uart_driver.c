@@ -12,10 +12,13 @@
 #include <EXTI_driver.h>
 #include <gpio_driver.h>
 
+
 int get_baud_rate()
 {
-
+	// fix this
+	return 0;
 }
+
 void mcal_uart_init(UART_CONF* conf)
 {
 	USART_R* usart = conf->USARTx ;
@@ -76,9 +79,9 @@ void mcal_uart_pin_init(USART_R* UARTx)
 		GPIO_PinConfig_t cnf;
 		cnf.GPIO_MODE = GPIO_MODE_INPUT_PU;
 		cnf.GPIO_PinNumber = pin9;
-		MCAL_GPIO_INIT(GPIOA, cnf)
+		MCAL_GPIO_INIT(GPIOA, &cnf);
 		cnf.GPIO_PinNumber = pin10;
-		MCAL_GPIO_INIT(GPIOA, cnf)
+		MCAL_GPIO_INIT(GPIOA, &cnf);
 	}
 
 }

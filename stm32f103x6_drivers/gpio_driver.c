@@ -64,6 +64,7 @@ uint32_t pos(uint32_t pin)
 		return 28;
 		break;
 	}
+	return 0;
 }
 
 void MCAL_GPIO_DEINIT		(GPIOx_R* GPIOx)
