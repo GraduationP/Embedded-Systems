@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <HDC_Motor.h>
+#include <HServo_Motor.h>
 
 /* USER CODE END Includes */
 
@@ -72,15 +73,24 @@ static void MX_TIM3_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	DC_Motor_Config_S Motor_Config;
-	Motor_Config.Motor_Pin1.GPIO_Pin	 = GPIO_PIN_0;
-	Motor_Config.Motor_Pin1.GPIOx		 = GPIOB;
 
-	Motor_Config.Motor_Pin2.GPIO_Pin	 = GPIO_PIN_1;
-	Motor_Config.Motor_Pin2.GPIOx		 = GPIOB;
+	/* DC Motor Configuration */
+	DC_Motor_Config_S DC_Motor_Config;
+	DC_Motor_Config.Motor_Pin1.GPIO_Pin	 	 		= GPIO_PIN_0;
+	DC_Motor_Config.Motor_Pin1.GPIOx		 		= GPIOB;
 
-	Motor_Config.Motor_SpeedPin.htim 	 = &htim2;
-	Motor_Config.Motor_SpeedPin.Channel  = TIM_CHANNEL_1;
+	DC_Motor_Config.Motor_Pin2.GPIO_Pin		 		= GPIO_PIN_1;
+	DC_Motor_Config.Motor_Pin2.GPIOx		 		= GPIOB;
+
+	DC_Motor_Config.Motor_SpeedPin.htim				= &htim2;
+	DC_Motor_Config.Motor_SpeedPin.Channel   		= TIM_CHANNEL_1;
+
+
+	/* Servo Configuration */
+	TimerConf_TypeDef Servo_TimerConf;
+	Servo_TimerConf.htim 							= &htim3;
+	Servo_TimerConf.Channel 						= TIM_CHANNEL_1;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -89,7 +99,9 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	HDC_Motor_Init(&Motor_Config);
+
+	HDC_Motor_Init(&DC_Motor_Config);
+	HServo_Init(&Servo_TimerConf);
 
   /* USER CODE END Init */
 
@@ -109,9 +121,10 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-	HDC_Motor_Direction(&Motor_Config, DC_MOTOR_DIRECTION_FORWARD);
-	HDC_Motor_Speed(&Motor_Config, 127);
+	HDC_Motor_Direction(&DC_Motor_Config, DC_MOTOR_DIRECTION_FORWARD);
+	HDC_Motor_Speed(&DC_Motor_Config, 127);
 
+	HServo_writePosition(&Servo_TimerConf, 90);
 
 
   /* USER CODE END 2 */
@@ -224,7 +237,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 64-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 256-1;
+  htim2.Init.Period = 255;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -306,7 +319,7 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 0;
+  sConfigOC.Pulse = 500;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)

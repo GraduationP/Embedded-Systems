@@ -8,7 +8,8 @@
 /**************************************/
 /*				Includes			  */
 /**************************************/
-
+#include <stm32f1xx_ll_tim.h>
+#include <stm32f1xx_hal_gpio.h>
 #include <HServo_Motor.h>
 
 
@@ -26,7 +27,6 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
 /*			 APIs Functions		  	  */
 /**************************************/
 
-
 /**========================================================
  * @Fn			- HServo_Init
  * @brief		- Initializes the desired Servo Motor pin
@@ -34,9 +34,9 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
  * @retval		- None
  * Note			-
  */
-void HServo_Init(TimerPin_TypeDef* Servo_TimerConfig)
+void HServo_Init(TimerConf_TypeDef *Servo_TimerConf)
 {
-
+	HAL_TIM_PWM_Start(Servo_TimerConf->htim, Servo_TimerConf->Channel);
 }
 
 
@@ -48,37 +48,13 @@ void HServo_Init(TimerPin_TypeDef* Servo_TimerConfig)
  * @retval		- None
  * Note			-
  */
-void HServo_writePosition(TimerPin_TypeDef* Servo_TimerConfig, uint8_t u8ServoPosition)
+void HServo_writePosition(TimerConf_TypeDef *Servo_TimerConf, uint8_t u8ServoPosition)
 {
 	/* Mapping position to microseconds */
 	uint16_t OnTime_us = map(u8ServoPosition, 0, 180, 500, 2500);
 
-	/* Preparing Timer mode and PWM Configuration */
-	TIM_OC_InitTypeDef sConfigOC = {0};
-
-	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-	sConfigOC.Pulse = OnTime_us;
-	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-
-	/* Stopping previous PWM Signal */
-	HAL_TIM_PWM_Stop(
-			Servo_TimerConfig->htim,
-			Servo_TimerConfig->Channel
-	);
-
-	/* Configuring Timerx Channelx to modify the speed */
-	HAL_TIM_PWM_ConfigChannel(
-			Servo_TimerConfig->htim,
-			&sConfigOC,
-			Servo_TimerConfig->Channel
-	);
-
-	/* Starting the desired PWM signal */
-	HAL_TIM_PWM_Start(
-			Servo_TimerConfig->htim,
-			Servo_TimerConfig->Channel
-	);
+	/* Writing the position of the servo as PWM signal */
+	PWM_ModifyOnTime(Servo_TimerConf, OnTime_us);
 }
 
 
@@ -89,34 +65,9 @@ void HServo_writePosition(TimerPin_TypeDef* Servo_TimerConfig, uint8_t u8ServoPo
  * @param[in]	- u16Value: PWM OnTime in Microseconds. Muse be from 500 to 2500
  * Note			-
  */
-void HServo_writeMicroseconds(TimerPin_TypeDef* Servo_TimerConfig, uint16_t u16Value)
+void HServo_writeMicroseconds(TimerConf_TypeDef *Servo_TimerConf, uint32_t u32Value)
 {
-	/* Preparing Timer mode and PWM Configuration */
-	TIM_OC_InitTypeDef sConfigOC = {0};
-
-	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-	sConfigOC.Pulse = u16Value;
-	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-
-	/* Stopping previous PWM Signal */
-	HAL_TIM_PWM_Stop(
-			Servo_TimerConfig->htim,
-			Servo_TimerConfig->Channel
-	);
-
-	/* Configuring Timerx Channelx to modify the Servo Position */
-	HAL_TIM_PWM_ConfigChannel(
-			Servo_TimerConfig->htim,
-			&sConfigOC,
-			Servo_TimerConfig->Channel
-	);
-
-	/* Starting the desired PWM signal */
-	HAL_TIM_PWM_Start(
-			Servo_TimerConfig->htim,
-			Servo_TimerConfig->Channel
-	);
+	PWM_ModifyOnTime(Servo_TimerConf, u32Value);
 }
 
 
@@ -127,11 +78,11 @@ void HServo_writeMicroseconds(TimerPin_TypeDef* Servo_TimerConfig, uint16_t u16V
  * @retval		- None
  * Note			-
  */
-void HServo_DeInit(TimerPin_TypeDef* Servo_TimerConfig)
+void HServo_DeInit(TimerConf_TypeDef *Servo_TimerConf)
 {
 	/* Stopping PWM Signal */
-	HAL_TIM_PWM_Stop(
-			Servo_TimerConfig->htim,
-			Servo_TimerConfig->Channel
-	);
+	//	HAL_TIM_PWM_Stop(
+	//			Servo_TimerConfig->htim,
+	//			Servo_TimerConfig->Channel
+	//	);
 }

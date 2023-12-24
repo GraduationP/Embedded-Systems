@@ -11,7 +11,7 @@
 /**************************************/
 /*				Includes			  */
 /**************************************/
-#include <Timerx_ConfTypes.h>
+#include <PWM.h>
 
 
 /**************************************/
@@ -26,7 +26,7 @@ typedef struct {
 typedef struct{
 	DC_Motor_PinConfig_S Motor_Pin1;
 	DC_Motor_PinConfig_S Motor_Pin2;
-	TimerPin_TypeDef Motor_SpeedPin;
+	TimerConf_TypeDef	 Motor_SpeedPin;
 }DC_Motor_Config_S;
 
 /**************************************/
@@ -49,7 +49,7 @@ void HDC_Motor_Init(DC_Motor_Config_S* Motor_Config);
 void HDC_Motor_Direction(DC_Motor_Config_S* Motor_Config, uint8_t u8Direction);
 
 /* Control the speed of the motor using a PWM signal */
-void HDC_Motor_Speed(DC_Motor_Config_S* Motor_Config, uint8_t u8Speed);
+void HDC_Motor_Speed(DC_Motor_Config_S* Motor_Config, uint32_t u32Speed);
 
 
 #endif /* HDC_MOTOR_H_ */

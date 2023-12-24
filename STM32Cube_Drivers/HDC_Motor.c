@@ -12,7 +12,6 @@
 #include <stm32f1xx_hal_gpio.h>
 #include <HDC_Motor.h>
 
-
 /**************************************/
 /*			 APIs Functions		  	  */
 /**************************************/
@@ -84,36 +83,12 @@ void HDC_Motor_Direction(DC_Motor_Config_S* DC_Motor_Config, uint8_t u8Direction
  * @Fn			- HDC_Motor_Speed
  * @brief		- Sets the speed of the DC Motor using a PWM signal
  * @param[in]	- DC_Motor_Config: Contains the DC Motor GPIO Port and Pin informations
- * @param[in]	- u8Speed: the speed of the DC Motor in PWM. Values between (0):(255)
+ * @param[in]	- u32Speed: the speed of the DC Motor in PWM. Values between (0):(255)
  * @retval		- None
  * Note			-
  */
-void HDC_Motor_Speed(DC_Motor_Config_S* DC_Motor_Config, uint8_t u8Speed)
+void HDC_Motor_Speed(DC_Motor_Config_S* DC_Motor_Config, uint32_t u32Speed)
 {
-	/* Preparing Timer mode and PWM Configuration */
-	TIM_OC_InitTypeDef sConfigOC = {0};
-
-	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-	sConfigOC.Pulse = u8Speed;
-	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-
-	/* Stopping previous PWM Signal */
-	HAL_TIM_PWM_Stop(
-			DC_Motor_Config->Motor_SpeedPin.htim,
-			DC_Motor_Config->Motor_SpeedPin.Channel
-	);
-
-	/* Configuring Timerx Channelx to modify the speed */
-	HAL_TIM_PWM_ConfigChannel(
-			DC_Motor_Config->Motor_SpeedPin.htim,
-			&sConfigOC,
-			DC_Motor_Config->Motor_SpeedPin.Channel
-	);
-
-	/* Starting the desired PWM signal */
-	HAL_TIM_PWM_Start(
-			DC_Motor_Config->Motor_SpeedPin.htim,
-			DC_Motor_Config->Motor_SpeedPin.Channel
-	);
+	TimerConf_TypeDef SpeedPin_Conf = DC_Motor_Config->Motor_SpeedPin;
+	PWM_ModifyOnTime(&SpeedPin_Conf, u32Speed);
 }
