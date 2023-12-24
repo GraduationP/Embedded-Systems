@@ -38,7 +38,7 @@ void HServo_Init(TimerConf_TypeDef *Servo_TimerConf);
 void HServo_writePosition(TimerConf_TypeDef *Servo_TimerConf, uint8_t u8ServoPosition);
 
 /* Writing a value in microseconds (us) to the servo */
-void HServo_writeMicroseconds(TimerConf_TypeDef *Servo_TimerConf, uint32_t u32Value);
+void HServo_writeMicroseconds(TimerConf_TypeDef *Servo_TimerConf, uint16_t u16Value);
 
 /* Detaching the servo pin (Stopping PWM Signal) */
 void HServo_DeInit(TimerConf_TypeDef *Servo_TimerConf);

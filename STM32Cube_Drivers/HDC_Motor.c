@@ -87,8 +87,8 @@ void HDC_Motor_Direction(DC_Motor_Config_S* DC_Motor_Config, uint8_t u8Direction
  * @retval		- None
  * Note			-
  */
-void HDC_Motor_Speed(DC_Motor_Config_S* DC_Motor_Config, uint32_t u32Speed)
+void HDC_Motor_Speed(DC_Motor_Config_S* DC_Motor_Config, uint16_t u16Speed)
 {
 	TimerConf_TypeDef SpeedPin_Conf = DC_Motor_Config->Motor_SpeedPin;
-	PWM_ModifyOnTime(&SpeedPin_Conf, u32Speed);
+	PWM_ModifyOnTime(&SpeedPin_Conf, u16Speed);
 }

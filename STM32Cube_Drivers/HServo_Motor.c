@@ -65,9 +65,9 @@ void HServo_writePosition(TimerConf_TypeDef *Servo_TimerConf, uint8_t u8ServoPos
  * @param[in]	- u16Value: PWM OnTime in Microseconds. Muse be from 500 to 2500
  * Note			-
  */
-void HServo_writeMicroseconds(TimerConf_TypeDef *Servo_TimerConf, uint32_t u32Value)
+void HServo_writeMicroseconds(TimerConf_TypeDef *Servo_TimerConf, uint16_t u16Value)
 {
-	PWM_ModifyOnTime(Servo_TimerConf, u32Value);
+	PWM_ModifyOnTime(Servo_TimerConf, u16Value);
 }
 
 

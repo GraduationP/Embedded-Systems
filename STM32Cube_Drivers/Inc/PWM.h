@@ -40,9 +40,9 @@ typedef struct{
 /**************************************/
 
 /* Modifying the On Time of the PWM signal */
-void PWM_ModifyOnTime(TimerConf_TypeDef *TimerConf, uint32_t u32Value);
+void PWM_ModifyOnTime(TimerConf_TypeDef *TimerConf, uint16_t u16Value);
 
 /* Modifying the Period of the PWM signal */
-void PWM_ModifyPeriod(TIM_HandleTypeDef* htim, uint32_t u32Period);
+void PWM_ModifyPeriod(TIM_HandleTypeDef* htim, uint32_t u16Period);
 
 #endif /* INC_PWM_H_ */
