@@ -21,8 +21,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 #include <HDC_Motor.h>
 #include <HServo_Motor.h>
+//#include <HServo_Motor.h>
 
 /* USER CODE END Includes */
 
@@ -54,9 +56,9 @@ TIM_HandleTypeDef htim3;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_CAN_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_CAN_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -74,22 +76,24 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+
 	/* DC Motor Configuration */
 	DC_Motor_Config_S DC_Motor_Config;
-	DC_Motor_Config.Motor_Pin1.GPIO_Pin	 	 		= GPIO_PIN_0;
-	DC_Motor_Config.Motor_Pin1.GPIOx		 		= GPIOB;
+	DC_Motor_Config.Motor_Pin1.GPIO_Pin	 	 		= GPIO_PIN_8;
+	DC_Motor_Config.Motor_Pin1.GPIOx		 		= GPIOA;
 
-	DC_Motor_Config.Motor_Pin2.GPIO_Pin		 		= GPIO_PIN_1;
-	DC_Motor_Config.Motor_Pin2.GPIOx		 		= GPIOB;
+	DC_Motor_Config.Motor_Pin2.GPIO_Pin		 		= GPIO_PIN_9;
+	DC_Motor_Config.Motor_Pin2.GPIOx		 		= GPIOA;
 
 	DC_Motor_Config.Motor_SpeedPin.htim				= &htim2;
 	DC_Motor_Config.Motor_SpeedPin.Channel   		= TIM_CHANNEL_1;
 
 
 	/* Servo Configuration */
-	TimerConf_TypeDef Servo_TimerConf;
-	Servo_TimerConf.htim 							= &htim3;
-	Servo_TimerConf.Channel 						= TIM_CHANNEL_1;
+//	TimerConf_TypeDef Servo_TimerConf;
+//	Servo_TimerConf.htim 							= &htim3;
+//	Servo_TimerConf.Channel 						= TIM_CHANNEL_1;
+
 
   /* USER CODE END 1 */
 
@@ -101,7 +105,7 @@ int main(void)
   /* USER CODE BEGIN Init */
 
 	HDC_Motor_Init(&DC_Motor_Config);
-	HServo_Init(&Servo_TimerConf);
+//	HServo_Init(&Servo_TimerConf);
 
   /* USER CODE END Init */
 
@@ -109,6 +113,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+
 	__HAL_RCC_TIM2_CLK_ENABLE();
 	__HAL_RCC_TIM3_CLK_ENABLE();
 
@@ -116,16 +121,15 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_CAN_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_CAN_Init();
   /* USER CODE BEGIN 2 */
 
-	HDC_Motor_Direction(&DC_Motor_Config, DC_MOTOR_DIRECTION_FORWARD);
-	HDC_Motor_Speed(&DC_Motor_Config, 127);
-
-	HServo_writePosition(&Servo_TimerConf, 90);
-
+//	HDC_Motor_Direction(&DC_Motor_Config, DC_MOTOR_DIRECTION_FORWARD);
+//	HDC_Motor_Speed(&DC_Motor_Config, 127);
+//
+//	HServo_writeMicroseconds(&Servo_TimerConf, 2000);
 
   /* USER CODE END 2 */
 
@@ -194,11 +198,11 @@ static void MX_CAN_Init(void)
 
   /* USER CODE END CAN_Init 1 */
   hcan.Instance = CAN1;
-  hcan.Init.Prescaler = 2;
+  hcan.Init.Prescaler = 16;
   hcan.Init.Mode = CAN_MODE_NORMAL;
   hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan.Init.TimeSeg1 = CAN_BS1_13TQ;
-  hcan.Init.TimeSeg2 = CAN_BS2_2TQ;
+  hcan.Init.TimeSeg1 = CAN_BS1_1TQ;
+  hcan.Init.TimeSeg2 = CAN_BS2_1TQ;
   hcan.Init.TimeTriggeredMode = DISABLE;
   hcan.Init.AutoBusOff = DISABLE;
   hcan.Init.AutoWakeUp = DISABLE;
@@ -235,9 +239,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 64-1;
+  htim2.Init.Prescaler = 8-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 255;
+  htim2.Init.Period = 256-1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -319,7 +323,7 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 500;
+  sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
@@ -340,17 +344,29 @@ static void MX_TIM3_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 /* USER CODE BEGIN MX_GPIO_Init_1 */
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+
+  /*Configure GPIO pin : PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+
 /* USER CODE END 4 */
 
 /**

@@ -45,10 +45,6 @@ void PWM_ModifyOnTime(TimerConf_TypeDef *TimerConf, uint16_t u16Value)
 	case TIM_CHANNEL_3:
 		TimerConf->htim->Instance->CCR3 = u16Value;
 		break;
-
-	case TIM_CHANNEL_4:
-		TimerConf->htim->Instance->CCR4 = u16Value;
-		break;
 	}
 }
 

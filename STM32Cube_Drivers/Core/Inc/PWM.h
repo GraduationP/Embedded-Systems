@@ -26,7 +26,6 @@ typedef struct{
 								  	  //@arg TIM_CHANNEL_1: TIM Channel 1 selected
 								 	 //@arg TIM_CHANNEL_2: TIM Channel 2 selected
 									//@arg TIM_CHANNEL_3: TIM Channel 3 selected
-							   	   //@arg TIM_CHANNEL_4: TIM Channel 4 selected
 }TimerConf_TypeDef;
 
 

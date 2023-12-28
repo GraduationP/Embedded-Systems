@@ -81,8 +81,8 @@ void HServo_writeMicroseconds(TimerConf_TypeDef *Servo_TimerConf, uint16_t u16Va
 void HServo_DeInit(TimerConf_TypeDef *Servo_TimerConf)
 {
 	/* Stopping PWM Signal */
-	//	HAL_TIM_PWM_Stop(
-	//			Servo_TimerConfig->htim,
-	//			Servo_TimerConfig->Channel
-	//	);
+		HAL_TIM_PWM_Stop(
+				Servo_TimerConf->htim,
+				Servo_TimerConf->Channel
+		);
 }
