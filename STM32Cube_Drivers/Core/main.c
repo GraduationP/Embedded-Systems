@@ -26,7 +26,9 @@
 #include <HDC_Motor.h>
 #include <HServo_Motor.h>
 #include <HEncoderAS5600.h>
+#include <HCompass_HMC5883L_3.h>
 #include <string.h>
+#include <Config.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,7 +59,6 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-#include <Config.h>
 
 /* USER CODE END PV */
 
@@ -144,27 +145,20 @@ int main(void)
 
 
 
-//
-//		/* Encoder Testing */
-//
-//
-//
+
+		/* Encoder Testing */
+		uint16_t u16EncoderReading;
+		HEncoder_CheckStatus();
+		HEncoder_ReadAngle(&u16EncoderReading);
+		// Print it on USART
 
 
 
 
-
-//		/* COMPASS Testing */
-//		buffer[0] = 0x00;
-//		/* */
-//		ret = HAL_I2C_Master_Transmit(&hi2c1, COMPASS_SLAVE_ADDRESS, buffer, 1, HAL_MAX_DELAY);
-//
-//		//		HAL_I2C_Master_Receive(&ENCODER_I2C, ENCODER_, pData, Size, Timeout);
-//
-//
-////		strcpy((char *)buffer, "Hello");
-////		HAL_UART_Transmit(&huart2, buffer, strlen((char *)buffer), HAL_MAX_DELAY);
-////		HAL_Delay(1000);
+		/* COMPASS Testing */
+		uint16_t X, Y, Z;
+		HCompass_ReadAxis(&X, &Y, &Z);
+		// Print it on USART
 
 
 
