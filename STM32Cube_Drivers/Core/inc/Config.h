@@ -14,7 +14,7 @@
 #include <stm32f1xx_ll_tim.h>
 #include <stm32f1xx_hal_tim.h>
 #include <stm32f1xx_hal_gpio.h>
-
+#include <stm32f1xx_hal_i2c.h>
 /**************************************/
 /*		 	External Variables 	  	  */
 /**************************************/
@@ -51,12 +51,12 @@ extern SPI_HandleTypeDef 	hspi2;
 #define DC_MOTOR_PIN2				GPIO_PIN_0
 #define DC_MOTOR_PIN2_GPIO			GPIOB
 
-/* Encoder Macros */
-#define ENCODER_I2C					hi2c1
+/* Used I2C Line */
+#define I2C_BUS						hi2c1
+
 
 /* GPS Macros */
 
-/* Compass Macros */
 
 /* NRF Macros */
 
