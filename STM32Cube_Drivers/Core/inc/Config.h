@@ -15,12 +15,14 @@
 #include <stm32f1xx_hal_tim.h>
 #include <stm32f1xx_hal_gpio.h>
 #include <stm32f1xx_hal_i2c.h>
+#include <stm32f1xx_hal_uart.h>
+#include <stm32f1xx_hal_spi.h>
 /**************************************/
 /*		 	External Variables 	  	  */
 /**************************************/
 
 /* Timers */
-//extern TIM_HandleTypeDef	htim4;	// Uncomment if using Timer4/
+//extern TIM_HandleTypeDef	htim4;	// Uncomment if using Timer4
 extern TIM_HandleTypeDef 	htim3;
 extern TIM_HandleTypeDef 	htim2;
 
@@ -54,12 +56,11 @@ extern SPI_HandleTypeDef 	hspi2;
 /* Used I2C Line */
 #define I2C_BUS						hi2c1
 
-
 /* GPS Macros */
-
+#define GPS_UART					huart1
 
 /* NRF Macros */
-
+#define NRF_SPI						hspi2
 
 /**************************************/
 /*		  Functions Prototypes 	  	  */

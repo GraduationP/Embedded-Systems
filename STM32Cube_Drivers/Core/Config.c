@@ -32,23 +32,49 @@ void DC_Motor_Timer_Start()
 
 void Encoder_Start()
 {
-	/* Stores the initial encoder reading to calculate number of turns */
+	HAL_StatusTypeDef ErrorState;
 
+	do{
+		ErrorState = HEncoder_CheckStatus();
+	}while(ErrorState != HAL_OK);
+
+
+	/* Stores the initial encoder reading to calculate number of turns */
 }
 
-void Compass_Start()
+HAL_StatusTypeDef Compass_Start()
 {
-	HAL_StatusTypeDef ret;
+	HAL_StatusTypeDef ErrorState;
+	uint8_t dataBuffer[3];
+	uint8_t CheckRegA, CheckRegB, CheckRegC;
 
-	/* Accessing the Mode Register in the Compass */
-	ret = HAL_I2C_Master_Transmit(&I2C_BUS, COMPASS_SLAVE_ADDRESS, (uint8_t*)0x02, 1, HAL_MAX_DELAY);
+	/* Detect the Compass first */
+	do{
+		/* Checking for the right values in the compass in identification registers */
+		ErrorState = HAL_I2C_Mem_Read(
+				&I2C_BUS,
+				COMPASS_SLAVE_ADDRESS,
+				COMPASS_IDENTIFICATION_ADDRESS, 1,
+				dataBuffer, 3,
+				HAL_MAX_DELAY
+		);
 
-	/* Checking acknowledge from the Compass' I2C Address */
-	if(ret == HAL_OK)
-	{
-		/* Set the Compass mode to Continuous measurement mode */
-		HAL_I2C_Master_Transmit(&I2C_BUS, COMPASS_SLAVE_ADDRESS, (uint8_t*)0x00, 1, HAL_MAX_DELAY);
-	}
+		/* Assigning values from Identification Registers A, B, C */
+		CheckRegA = dataBuffer[0];
+		CheckRegB = dataBuffer[1];
+		CheckRegC = dataBuffer[2];
+	}while(CheckRegA != 'H' || CheckRegB != '4' || CheckRegC != '3');
+
+	/* Access the Mode Register to set the Compass mode to Continuous measurement mode */
+	ErrorState = HAL_I2C_Mem_Write(
+			&I2C_BUS,
+			COMPASS_SLAVE_ADDRESS,
+			COMPASS_MODE_REGISTER_ADDRESS, 1,
+			(uint8_t*)0x00, 1,
+			HAL_MAX_DELAY
+	);
+
+	return ErrorState;
 }
 
 /**************************************/
