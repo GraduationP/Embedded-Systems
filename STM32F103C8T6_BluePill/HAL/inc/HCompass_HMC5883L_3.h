@@ -26,10 +26,10 @@
 /*		  Functions Prototypes 	  	  */
 /**************************************/
 
-/* Reads the positions of the three Axis X, Y, Z */
-HAL_StatusTypeDef HCompass_ReadAxis(uint16_t* X, uint16_t* Y, uint16_t* Z);
-
 /* Initializes the Compass */
 HAL_StatusTypeDef HCompass_Init();
+
+/* Reads the positions of the three Axis X, Y, Z */
+HAL_StatusTypeDef HCompass_ReadAxis(uint16_t* X, uint16_t* Y, uint16_t* Z);
 
 #endif /* INC_HCOMPASS_HMC5883L_3_H_ */

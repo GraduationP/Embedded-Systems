@@ -58,6 +58,6 @@ void HDC_Motor_Direction(uint8_t u8Direction)
  */
 void HDC_Motor_Speed(uint8_t u8Speed)
 {
-	__HAL_TIM_SET_COMPARE(&DC_MOTOR_TIMER, DC_MOTOR_CHANNEL, (uint16_t)(255 - u8Speed));
+	__HAL_TIM_SET_COMPARE(&DC_MOTOR_TIMER, DC_MOTOR_CHANNEL, (uint16_t)u8Speed);
 }
 

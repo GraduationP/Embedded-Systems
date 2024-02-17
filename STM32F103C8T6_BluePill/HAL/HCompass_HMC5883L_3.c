@@ -69,30 +69,39 @@ HAL_StatusTypeDef HCompass_Init()
 	uint8_t CheckRegA, CheckRegB, CheckRegC;
 
 	/* Detect the Compass first */
-	do{
-		/* Checking for the right values in the compass in identification registers */
-		ErrorState = HAL_I2C_Mem_Read(
-				&I2C_BUS,
-				COMPASS_SLAVE_ADDRESS,
-				COMPASS_IDENTIFICATION_ADDRESS, 1,
-				dataBuffer, 3,
-				HAL_MAX_DELAY
-		);
-
-		/* Assigning values from Identification Registers A, B, C */
-		CheckRegA = dataBuffer[0];
-		CheckRegB = dataBuffer[1];
-		CheckRegC = dataBuffer[2];
-	}while(CheckRegA != 'H' || CheckRegB != '4' || CheckRegC != '3');
-
-	/* Access the Mode Register to set the Compass mode to Continuous measurement mode */
-	ErrorState = HAL_I2C_Mem_Write(
+	HAL_I2C_Mem_Read(
 			&I2C_BUS,
 			COMPASS_SLAVE_ADDRESS,
-			COMPASS_MODE_REGISTER_ADDRESS, 1,
-			(uint8_t*)0x00, 1,
+			COMPASS_IDENTIFICATION_ADDRESS, 1,
+			dataBuffer, 3,
 			HAL_MAX_DELAY
 	);
+
+	/* Assigning values from Identification Registers A, B, C */
+	CheckRegA = dataBuffer[0];
+	CheckRegB = dataBuffer[1];
+	CheckRegC = dataBuffer[2];
+
+	/* Checking for the right values in the compass in identification registers */
+	if(CheckRegA == 'H' && CheckRegB == '4' && CheckRegC == '3')
+	{
+		/* Connected successfully */
+		ErrorState = HAL_OK;
+
+		/* Access the Mode Register to set the Compass mode to Continuous measurement mode */
+		HAL_I2C_Mem_Write(
+				&I2C_BUS,
+				COMPASS_SLAVE_ADDRESS,
+				COMPASS_MODE_REGISTER_ADDRESS, 1,
+				(uint8_t*)0x00, 1,
+				HAL_MAX_DELAY
+		);
+	}
+	else
+	{
+		/* Problem connecting to Compass */
+		ErrorState = HAL_ERROR;
+	}
 
 	return ErrorState;
 }
