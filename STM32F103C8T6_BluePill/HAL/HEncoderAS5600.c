@@ -17,20 +17,23 @@
 /*			 APIs Functions		  	  */
 /**************************************/
 
+
 /**========================================================
  * @Fn			- HEncoder_CheckStatus
  * @brief		- Checking Encoder Connection before reading the ADC Value
- * @retval		- ErrorState: Returns HAL_OK if the Encoder is detected and in right position
+ * @retval		- EncoderStatus: Returns Status values.
+ * 								 Will return ENCODER_WORKING if the Encoder is detected and in right position
+ * 								 Returns 0 if the encoder isn't connected properly
  * Note			- Status values: 0bXXDLHXXX
  * 											D: Magnet Detected,
  * 											L: Magnet Too Weak,
  * 											H: Magnet Too Strong
  * 											Wanted Value: 0x20
  */
-HAL_StatusTypeDef HEncoder_CheckStatus()
+uint8_t HEncoder_CheckStatus()
 {
-	HAL_StatusTypeDef ErrorState; // acknowledge from the Encoder's I2C Address
 	uint8_t EncoderStatus = 0x00;
+	HAL_StatusTypeDef ErrorState;
 
 	/* Checking the Status Register from the encoder */
 	ErrorState = HAL_I2C_Mem_Read(
@@ -40,10 +43,33 @@ HAL_StatusTypeDef HEncoder_CheckStatus()
 			&EncoderStatus, 1,
 			HAL_MAX_DELAY
 	);
+	if(ErrorState == HAL_OK)
+	{
+		return EncoderStatus;
+	}
+	else
+		return 0x00;
+}
 
-	/* Check for desired status */
-	if(EncoderStatus == 0x20)
+/**========================================================
+ * @Fn			- HEncoder_Init
+ * @brief		- Initializes the Encoder
+ * @retval		- ErrorState: returns HAL_OK if the encoder is connected properly
+ * Note			-
+ */
+HAL_StatusTypeDef HEncoder_Init()
+{
+	HAL_StatusTypeDef ErrorState;
+	uint8_t u8Local_EncoderStatus;
+	u8Local_EncoderStatus = HEncoder_CheckStatus();
+	if(u8Local_EncoderStatus == ENCODER_WORKING)
+	{
 		ErrorState = HAL_OK;
+	}
+
+	/* Stores the initial encoder reading to calculate number of turns */
+	uint16_t u16EncoderReading = 0;
+	HEncoder_ReadAngle(&u16EncoderReading);
 
 	return ErrorState;
 }
@@ -67,13 +93,14 @@ HAL_StatusTypeDef HEncoder_ReadAngle(uint16_t* u16EncoderReading)
 			ENCODER_SLAVE_ADDRESS,
 			ENCODER_RAW_ANGLE_ADDRESS, 1,
 			dataBuffer, 2,
-			HAL_MAX_DELAY);
+			HAL_MAX_DELAY
+	);
 
 	/* Checking if the reading was received successfully */
 	if(ErrorState == HAL_OK)
 	{
 		/* Combining the 2 Bytes into one variable */
-		*u16EncoderReading = ((uint16_t)dataBuffer[0] << 8 &(~0xFC)) | dataBuffer[1];
+		*u16EncoderReading = (((uint16_t)dataBuffer[0] & (0x0F)) << 8) | dataBuffer[1];
 
 		/* Converting the ADC value to degrees from 0 to 360 */
 		*u16EncoderReading = (uint16_t)(*u16EncoderReading *(360.0/4096));
@@ -81,19 +108,4 @@ HAL_StatusTypeDef HEncoder_ReadAngle(uint16_t* u16EncoderReading)
 	return ErrorState;
 }
 
-/**========================================================
- * @Fn			- HEncoder_Init
- * @brief		- Initializes the Encoder
- * Note			- Stays in blocking mode until connecting with the Encoder via I2C
- */
-void HEncoder_Init()
-{
-	HAL_StatusTypeDef ErrorState;
 
-	do{
-		ErrorState = HEncoder_CheckStatus();
-	}while(ErrorState != HAL_OK);
-
-
-	/* Stores the initial encoder reading to calculate number of turns */
-}

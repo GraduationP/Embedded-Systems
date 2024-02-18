@@ -24,20 +24,22 @@
 #define ENCODER_RAW_ANGLE_ADDRESS	0x0C
 #define ENCODER_ANGLE_ADDRESS		0x0E
 
+#define ENCODER_WORKING				0x20
+
 /**************************************/
 /*		  Functions Prototypes 	  	  */
 /**************************************/
 
+/* Initializes the Encoder */
+HAL_StatusTypeDef HEncoder_Init();
+
 /* Ensuring that the encoder is working */
-HAL_StatusTypeDef HEncoder_CheckStatus();
+uint8_t HEncoder_CheckStatus();
 
 /* Reads the desired angle from 0 to 360 */
 HAL_StatusTypeDef HEncoder_ReadAngle(uint16_t* u16EncoderReading);
 
 /* The number of steps according to the initialized angle from the start of the program */
 void HEncoder_numOfSteps(uint16_t* u16PositionReading);
-
-/* Initializes the Encoder */
-void HEncoder_Init();
 
 #endif /* INC_HENCODERAS5600_H_ */
