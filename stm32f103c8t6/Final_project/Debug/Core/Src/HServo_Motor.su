@@ -1,0 +1,5 @@
+../Core/Src/HServo_Motor.c:17:6:map	8	static
+../Core/Src/HServo_Motor.c:30:6:HServo_Timer_Init	0	static
+../Core/Src/HServo_Motor.c:43:6:HServo_writePosition	0	static
+../Core/Src/HServo_Motor.c:58:6:HServo_writeMicroseconds	0	static
+../Core/Src/HServo_Motor.c:69:6:HServo_DeInit	0	static

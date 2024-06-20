@@ -1,0 +1,8 @@
+main.c:69:6:HAL_CAN_RxFifo1MsgPendingCallback	8	static
+main.c:76:6:can_tx	16	static
+main.c:96:10:Flash_Write_Data	32	static
+main.c:143:15:ascii_to_hex	0	static
+main.c:162:6:receive_program	24	static
+main.c:266:6:SystemClock_Config	72	static
+main.c:194:5:main	80	static,ignoring_inline_asm
+main.c:393:6:Error_Handler	0	static

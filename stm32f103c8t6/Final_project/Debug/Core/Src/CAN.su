@@ -1,0 +1,2 @@
+../Core/Src/CAN.c:36:6:can_rx	8	static
+../Core/Src/CAN.c:60:6:can_tx	24	static
